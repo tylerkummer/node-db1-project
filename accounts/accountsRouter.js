@@ -49,25 +49,33 @@ router.post("/", (req, res) => {
 });
 
 // PATCH account
-router.patch("/:id", (req, res) => {
-  const changes = req.body;
-  const { id } = req.params;
-  db("accounts")
-    .where({ id })
-    .update(changes)
-    .then((count) => {
-      if (count > 0) {
-        res.status(200).json({ message: "update successful" });
-      } else {
-        res.status(404).json({ message: "no posts by that id found" });
-      }
-    });
-});
+// router.patch("/:id", (req, res) => {
+//   const changes = req.body;
+//   const { id } = req.params;
+//   db("accounts")
+//     .where({ id })
+//     .update(changes)
+//     .then((count) => {
+//       if (count > 0) {
+//         res.status(200).json({ message: "update successful" });
+//       } else {
+//         res.status(404).json({ message: "no posts by that id found" });
+//       }
+//     });
+// });
 
 // DELETE account
 router.delete("/:id", (req, res) => {
   const { id } = req.params;
-  db("accounts").where({ id }).del();
+  db("accounts")
+    .del()
+    .where({ id })
+    .then((accountDeleted) => {
+      res.status(200).json({ data: accountDeleted });
+    })
+    .catch((error) => {
+      res.status(500).json({ error: error.message });
+    });
 });
 
 module.exports = router;
